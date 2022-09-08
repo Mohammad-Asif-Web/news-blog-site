@@ -12,7 +12,23 @@
 
               <?php
               include "config.php";
-              $sql = "SELECT * FROM user ORDER BY user_id DESC";
+               /* Calculation of Pagination
+               ex: SElECT * FROM user LIMIT 0, 3 -> that means, it will show 3 records, 0 to 2
+                LIMIT takes two value offset, Limit
+                $limit = how much records we will display
+                $offset = From where to start showing records.
+                offset = (1 -1) * 3 = 0
+                offset = (2 -1) * 3 = 3
+                offset = (3 - 1) * = 6 
+                */
+              $limit = 2;
+              if(isset($_GET['page'])){
+                $page = $_GET['page'];
+              } else {
+                $page = 1;
+              }
+              $offset = ($page -1) * $limit;
+              $sql = "SELECT * FROM user ORDER BY user_id DESC LIMIT {$offset}, {$limit}";
               $result = mysqli_query($con, $sql) or die("Query Failed");
               if(mysqli_num_rows($result) > 0){
               
@@ -51,15 +67,38 @@
                       </tbody>
                   </table>
                   <?php
-              }
+            }
+                    $sqlPage = "SELECT * FROM user";
+                    $resultPage = mysqli_query($con, $sqlPage);
+                    
+                    if(mysqli_num_rows($resultPage) > 0){
+                        // $total_records = how much records store in database
+                        $total_records = mysqli_num_rows($resultPage);
+                        $total_page = ceil($total_records / $limit);
+
+                        echo "<ul class='pagination admin-pagination'>";
+                        if($page > 1){
+                            echo '<li><a href="users.php?page='.($page - 1).'">Prev</a></li>';
+                        }
+                        
+                        for($i = 1; $i <= $total_page; $i++){
+                            if($i == $page){
+                                $active = "active";
+                            } else {
+                                $active = '';
+                            }
+                            echo "<li class='$active'><a href='users.php?page=$i'>$i</a></li>";
+                        }
+                        // if $total_page number is greater than $page number then Next button will be show or it will be hide
+                        if($total_page > $page){
+                            echo '<li><a href="users.php?page='.($page + 1).'">Next</a></li>';
+                        }
+                        echo "</ul>";
+                    }
                   ?>
-                  <ul class='pagination admin-pagination'>
-                      <li class="active"><a>1</a></li>
-                      <li><a>2</a></li>
-                      <li><a>3</a></li>
-                  </ul>
+                  
               </div>
           </div>
       </div>
   </div>
-<?php include "header.php"; ?>
+<?php include "footer.php"; ?>

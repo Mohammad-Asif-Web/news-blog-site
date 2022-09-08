@@ -1,5 +1,10 @@
 <?php include "header.php"; 
 
+//the normal users will not get access to this site 
+if($_SESSION['role'] == '0'){
+    header("Location: {$hostname}/admin/post.php");
+}
+
 if(isset($_POST['save'])){
     include "config.php";
 

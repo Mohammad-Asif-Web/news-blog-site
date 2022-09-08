@@ -1,4 +1,11 @@
-<?php include "header.php"; ?>
+<?php include "header.php"; 
+
+//the normal users will not get access to this site 
+if($_SESSION['role'] == '0'){
+    header("Location: {$hostname}/admin/post.php");
+}
+
+?>
   <div id="admin-content">
       <div class="container">
           <div class="row">

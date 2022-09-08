@@ -1,3 +1,18 @@
+<?php
+
+include 'config.php';
+/*this code is for security purpose. if anyone want to go any page by url without login, 
+so he will be redirected to login page. so must be login first then he will go to inside
+the page. I include this in header page because header file is included in every file
+without login or index file. when the username is will be found by session, then he can
+enter into the other pages*/
+session_start();
+if(!isset($_SESSION['username'])){
+    header("Location: {$hostname}/admin/");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -43,12 +58,21 @@
                             <li>
                                 <a href="post.php">Post</a>
                             </li>
+                            <?php
+                            /*this code is for security for users. only admin can see
+                            category and users site. admin value is '1' in mysql database.
+                             */
+                                if($_SESSION['role'] == '1'){
+                            ?>
                             <li>
                                 <a href="category.php">Category</a>
                             </li>
                             <li>
                                 <a href="users.php">Users</a>
                             </li>
+                            <?php
+                                }
+                            ?>
                         </ul>
                     </div>
                 </div>
