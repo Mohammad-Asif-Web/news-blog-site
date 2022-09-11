@@ -28,7 +28,7 @@ if($_SESSION['role'] == '0'){
                 offset = (2 -1) * 3 = 3
                 offset = (3 - 1) * = 6 
                 */
-              $limit = 2;
+              $limit = 4;
               if(isset($_GET['page'])){
                 $page = $_GET['page'];
               } else {
