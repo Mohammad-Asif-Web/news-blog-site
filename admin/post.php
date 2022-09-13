@@ -22,7 +22,7 @@
                 offset = (2 -1) * 3 = 3
                 offset = (3 - 1) * = 6 
                 */
-              $limit = 4;
+              $limit = 3;
               if(isset($_GET['page'])){
                 $page = $_GET['page'];
               } else {
@@ -32,7 +32,7 @@
 
             //   if the user is admin, all data will be displayed
               if($_SESSION['role'] == '1'){
-                $sql = "SELECT post.post_id, post.title, post.description, 
+                $sql = "SELECT post.post_id, post.title, post.description, post.category,
               post.post_date, category.category_name, user.username FROM post
               LEFT JOIN category ON post.category = category.category_id
               LEFT JOIN user ON post.author = user.user_id
@@ -40,7 +40,7 @@
 
                 // if the user is normal user, only the normal users data will be displayed
               } elseif($_SESSION['role'] == '0') {
-                $sql = "SELECT post.post_id, post.title, post.description, 
+                $sql = "SELECT post.post_id, post.title, post.description, post.category,
               post.post_date, category.category_name, user.username FROM post
               LEFT JOIN category ON post.category = category.category_id
               LEFT JOIN user ON post.author = user.user_id
@@ -74,7 +74,7 @@
                               <td><?php echo $row['post_date'] ?></td>
                               <td><?php echo $row['username'] ?></td>
                               <td class='edit'><a href='update-post.php?id=<?php echo $row['post_id'] ?>'><i class='fa fa-edit'></i></a></td>
-                              <td class='delete'><a href='delete-post.php?id=<?php echo $row['post_id'] ?>'><i class='fa fa-trash-o'></i></a></td>
+                              <td class='delete'><a href='delete-post.php?id=<?php echo $row['post_id'] ?>&cat_id=<?php echo $row['category']?>'><i class='fa fa-trash-o'></i></a></td>
                           </tr>
                           <?php
                         }
