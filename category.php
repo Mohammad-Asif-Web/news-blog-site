@@ -6,19 +6,19 @@
                 <!-- post-container -->
                 <div class="post-container">
                     <?php
+                    include "config.php";
+                    if(isset($_GET['cat_id'])){
+                        $cat_id = $_GET['cat_id'];
+                    }
+
                     $sqlHead = "SELECT * FROM category WHERE category_id = $cat_id";
                     $resultHead = mysqli_query($con, $sqlHead) or die("Query Failed");
                     $rowHead = mysqli_fetch_assoc($resultHead);
                     ?>
                   <h2 class="page-heading"><?php echo $rowHead['category_name']?></h2>
                   <?php
-                        include "config.php";
-
-                        if(isset($_GET['cat_id'])){
-                            $cat_id = $_GET['cat_id'];
-                        }
-
-                        $limit = 3;
+                    
+                        $limit = 2;
                         if(isset($_GET['page'])){
                             $page = $_GET['page'];
                         } else {
@@ -27,7 +27,7 @@
                         $offset = ($page -1) * $limit;
 
                         $sql = "SELECT post.post_id, post.title, post.description, post.category, post.post_img,
-                        post.post_date, category.category_name, user.username FROM post
+                        post.post_date, post.author, category.category_name, user.username FROM post
                         LEFT JOIN category ON post.category = category.category_id
                         LEFT JOIN user ON post.author = user.user_id
                         WHERE post.category = {$cat_id}
@@ -53,7 +53,7 @@
                                             </span>
                                             <span>
                                                 <i class="fa fa-user" aria-hidden="true"></i>
-                                                <a href='author.php'><?php echo $row['username'] ?></a>
+                                                <a href='author.php?auth_id=<?php echo $row['author'] ?>'><?php echo $row['username'] ?></a>
                                             </span>
                                             <span>
                                                 <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -70,7 +70,7 @@
                         </div>
                         <?php
                             }
-                        }
+                        }  
                         
                         // show pagination
                         $sqlPage = "SELECT * FROM category WHERE category_id = $cat_id";
@@ -81,10 +81,11 @@
                             // $total_records = how much records store in database
                             $total_records = $row['post'];
                             $total_page = ceil($total_records / $limit);
+
     
                             echo "<ul class='pagination admin-pagination'>";
                             if($page > 1){
-                                echo '<li><a href="index.php?cat_id='.$cat_id.'&page='.($page - 1).'">Prev</a></li>';
+                                echo '<li><a href="category.php?cat_id='.$cat_id .'&page='.($page - 1).'">Prev</a></li>';
                             }
                             
                             for($i = 1; $i <= $total_page; $i++){
@@ -93,16 +94,17 @@
                                 } else {
                                     $active = '';
                                 }
-                                echo "<li class='$active'><a href='index.php?page=$i'>$i</a></li>";
+                                echo '<li class="'.$active.'"><a href="category.php?cat_id='.$cat_id .'&page='.$i.'">'.$i.'</a></li>';
                             }
                             // if $total_page number is greater than $page number then Next button will be show or it will be hide
                             if($total_page > $page){
-                                echo '<li><a href="index.php?cat_id='.$cat_id.'&page='.($page + 1).'">Next</a></li>';
+                                echo '<li><a href="category.php?cat_id='.$cat_id .'&page='.($page + 1).'">Next</a></li>';
                             }
                             echo "</ul>";
-                        }
+                        } 
                         ?>
-                </div><!-- /post-container -->
+                </div>
+                <!-- /post-container -->
             </div>
             <?php include 'sidebar.php'; ?>
         </div>
