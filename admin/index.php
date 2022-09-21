@@ -47,6 +47,7 @@ if(isset($_SESSION['username'])){
                         
                             if(isset($_POST['login'])){
                                 include "config.php";
+                                
                                 $username = mysqli_real_escape_string($con, $_POST['username']);
                                 $password = md5($_POST['password']);
 
