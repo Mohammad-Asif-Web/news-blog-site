@@ -1,4 +1,21 @@
-<?php include "header.php"; ?>
+<?php include "header.php"; 
+
+    include 'config.php';
+    if($_SESSION['role'] == '0'){
+        $post_id = $_GET['id'];
+        $sql2 = "SELECT author FROM post WHERE post_id = '$post_id'";
+        
+        $result2 = mysqli_query($con, $sql2) or die("Query Failed");
+        $row2 = mysqli_fetch_assoc($result2);
+
+        if($row2['author'] != $_SESSION['user_id']){
+            header("location: {$hostname}/admin/post.php");
+        }
+    } 
+
+
+
+?>
 <div id="admin-content">
   <div class="container">
   <div class="row">
@@ -7,13 +24,14 @@
     </div>
     <div class="col-md-offset-3 col-md-6">
         <?php
-            include 'config.php';
+            
             $post_id = $_GET['id'];
             $sql = "SELECT post.post_id, post.title, post.description, post.category,
               post.post_date, post.post_img, category.category_name, user.username FROM post
               LEFT JOIN category ON post.category = category.category_id
               LEFT JOIN user ON post.author = user.user_id
               WHERE post.post_id = '$post_id'";
+
               $result = mysqli_query($con, $sql);
               if(mysqli_num_rows($result) > 0) {
                 while($row = mysqli_fetch_assoc($result)) { 
@@ -57,6 +75,7 @@
                     ?>
                     
                 </select>
+                <input type="hidden" name="old_category" value="<?php echo $row['category'] ?>">
             </div>
             <div class="form-group">
                 <label for="">Post image</label>

@@ -5,7 +5,7 @@ include 'config.php';
  into empty condition. if user want to change the image
  then the else condition will run */
 if(empty($_FILES['new-image']['name'])){
-    $image_Name = $_POST['old-image'];
+    $new_name = $_POST['old-image'];
 } else {
     $error = array();
     $image_Name = $_FILES['new-image']['name'];
@@ -24,8 +24,12 @@ if(empty($_FILES['new-image']['name'])){
     if($image_size > 2097152){
         $error[] =  "file size must be 2mb or lower";
     }
+
+    $new_name = time(). "-". basename($image_Name);
+    $target = "upload/".$new_name;
+    $image_name = $new_name;
     if(empty($error) == true){
-        move_uploaded_file($image_tmp_name,"upload/".$image_Name);
+        move_uploaded_file($image_tmp_name, $target);
     } else{
         print_r($error);
         die();
@@ -37,9 +41,14 @@ $postDesc = mysqli_real_escape_string($con, $_POST['postdesc']);
 $category = mysqli_real_escape_string($con, $_POST['category']);
 $post_id = $_POST['post_id'];
 
-$sql = "UPDATE post SET title='$title', description='$postDesc', category=$category, post_img='$image_Name' WHERE post_id =$post_id  ";
+$sql = "UPDATE post SET title='$title', description='$postDesc', category=$category, post_img='$image_name' WHERE post_id =$post_id ; ";
+if($_POST['old_category'] != $_POST['category']){
+    $sql .= "UPDATE category SET post = post - 1 WHERE category_id = {$_POST['old_category']};";
+    $sql .= "UPDATE category SET post = post + 1 WHERE category_id = {$_POST['category']};";
+}
 
-$result = mysqli_query($con, $sql) or die("Query Failed");
+
+$result = mysqli_multi_query($con, $sql) or die("Query Failed");
 if($result){
     header("location: {$hostname}/admin/post.php");
 }

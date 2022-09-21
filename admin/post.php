@@ -64,11 +64,12 @@
                       </thead>
                       <tbody>
                       <?php
+                        $sl = $offset + 1;
                         while($row = mysqli_fetch_assoc($result)){ 
                         ?>
                        
                           <tr>
-                              <td class='id'><?php echo $row['post_id'] ?></td>
+                              <td class='id'><?php echo $sl ?></td>
                               <td><?php echo $row['title'] ?></td>
                               <td><?php echo $row['category_name'] ?></td>
                               <td><?php echo $row['post_date'] ?></td>
@@ -77,6 +78,7 @@
                               <td class='delete'><a href='delete-post.php?id=<?php echo $row['post_id'] ?>&cat_id=<?php echo $row['category']?>'><i class='fa fa-trash-o'></i></a></td>
                           </tr>
                           <?php
+                          $sl++;
                         }
                         ?>
                       </tbody>
